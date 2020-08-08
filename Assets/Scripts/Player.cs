@@ -1,27 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    public GameObject[] levels;
     public bool[] unlockedLevel;
+    public int[] starPerLevel;
+    public int levelNow;
 
     private void Awake()
     {
         Singleton();
-    }
-
-    private void Start()
-    {
-        for(int i = 0; i < levels.Length; i++)
-        {
-            if(unlockedLevel[i])
-            {
-                levels[i].GetComponent<Button>().interactable = true;
-            }
-        }
+        starPerLevel = new int[unlockedLevel.Length];
     }
 
     public void LevelFinished(int level)
@@ -40,5 +30,10 @@ public class Player : MonoBehaviour
         {
             DontDestroyOnLoad(gameObject);
         }
+    }
+
+    public void UpdateStarPerLever(int stars)
+    {
+        starPerLevel[levelNow-1] = stars;
     }
 }

@@ -8,11 +8,13 @@ public class WinCondition : MonoBehaviour
     [SerializeField] GameObject winCanvas = default;
     [SerializeField] AudioClip winSFX = default;
     public int level;
+
+    //SIZE 2
     public int[] movePerStar;
 
 
-    int noOfStars;
     Goal[] goalsArray;
+    Player player;
     PlayerMovement playerMovement;
     bool shouldWin = false;
     bool oneTimer = true;
@@ -22,6 +24,7 @@ public class WinCondition : MonoBehaviour
         winCanvas.SetActive(false);
         goalsArray = FindObjectsOfType<Goal>();
         playerMovement = FindObjectOfType<PlayerMovement>();
+        player = FindObjectOfType<Player>();
     }
 
     void FixedUpdate()
@@ -66,15 +69,15 @@ public class WinCondition : MonoBehaviour
     {
         if (playerMovement.numMoves <= movePerStar[0])
         {
-            noOfStars = 3;
+            player.UpdateStarPerLever(3);
         }
         else if (playerMovement.numMoves > movePerStar[0] && playerMovement.numMoves <= movePerStar[1])
         {
-            noOfStars = 2;
+            player.UpdateStarPerLever(2);
         }
         else
         {
-            noOfStars = 1;
+            player.UpdateStarPerLever(1);
         }
     }
 
