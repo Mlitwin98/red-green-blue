@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5929470258627511165}
   - component: {fileID: 5929470258627511164}
   - component: {fileID: 5929470258627511167}
-  - component: {fileID: 5929470258627511166}
+  - component: {fileID: 4735002178024771887}
   m_Layer: 0
   m_Name: Button
   m_TagString: Untagged
@@ -47,6 +47,8 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -58,6 +60,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -107,7 +110,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &5929470258627511166
+--- !u!114 &4735002178024771887
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,7 +119,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5929470258627511154}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80ff3619d5f420c4f98c038d68c60698, type: 3}
+  m_Script: {fileID: 11500000, guid: 0f9f7c41f62101541a31e850fd568e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   blockade: {fileID: 0}

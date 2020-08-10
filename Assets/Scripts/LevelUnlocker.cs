@@ -23,6 +23,10 @@ public class LevelUnlocker : MonoBehaviour
                 levels[i].GetComponent<Button>().interactable = true;
                 ActivateStars(i);
             }
+            else
+            {
+                levels[i].GetComponent<Button>().interactable = false;
+            }
         }
     }
 
@@ -44,6 +48,12 @@ public class LevelUnlocker : MonoBehaviour
             levels[i].transform.Find("Star1").GetComponent<Image>().enabled = true;
             levels[i].transform.Find("Star2").GetComponent<Image>().enabled = true;
             levels[i].transform.Find("Star3").GetComponent<Image>().enabled = true;
+        }
+        else
+        {
+            levels[i].transform.Find("Star1").GetComponent<Image>().enabled = false;
+            levels[i].transform.Find("Star2").GetComponent<Image>().enabled = false;
+            levels[i].transform.Find("Star3").GetComponent<Image>().enabled = false;
         }
     }
 }
