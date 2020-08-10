@@ -5,15 +5,37 @@ using UnityEngine.SceneManagement;
 
 public class SceneManage : MonoBehaviour
 {
+    public Animator fadeAnim;
+
     public void LoadLevel(int level)
     {
         FindObjectOfType<Player>().levelNow = level;
-        SceneManager.LoadScene(level); 
+        StartCoroutine(HandleAnim(level));
+
     }
+
+    public void LoadLevel(string level)
+    {
+        StartCoroutine(HandleAnim(level));
+    }
+
+    private IEnumerator HandleAnim(int level)
+    {
+        fadeAnim.SetBool("fadeOut", true);
+        yield return new WaitForSeconds(1.2f);
+        SceneManager.LoadScene(level);
+    }
+    private IEnumerator HandleAnim(string level)
+    {
+        fadeAnim.SetBool("fadeOut", true);
+        yield return new WaitForSeconds(1.2f);
+        SceneManager.LoadScene(level);
+    }
+
 
     public void LoadMainMenu()
     {
-        SceneManager.LoadScene(0);
+        LoadLevel(0);
     }
 
     public void LoadNextLevel()
@@ -28,11 +50,11 @@ public class SceneManage : MonoBehaviour
 
     public void LoadLevelsScene()
     {
-        SceneManager.LoadScene("Levels");
+        LoadLevel("Levels");
     }
 
     public void LoadAuthorScene()
     {
-        SceneManager.LoadScene("Author");
+        LoadLevel("Author");
     }
 }
