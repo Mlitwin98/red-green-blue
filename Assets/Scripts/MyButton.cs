@@ -9,5 +9,6 @@ public class MyButton : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Destroy(blockade);
+        Destroy(gameObject);
     }
 }

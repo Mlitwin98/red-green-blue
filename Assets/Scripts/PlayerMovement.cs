@@ -7,21 +7,20 @@ public class PlayerMovement : MonoBehaviour
     public float jumpLength = 1.5f;
 
     Rigidbody2D rb;
-    TilesColor tilesColor;
-
     Vector2 movement;
     Vector2 lastPos;
     public int numMoves;
     private Vector2 fingerDown;
     private Vector2 fingerUp;
+    private Animator animator;
 
     public float SWIPE_THRESHOLD = 20f;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        tilesColor = FindObjectOfType<TilesColor>();
         numMoves = 0;
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -55,8 +54,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleMove(Vector2 dir)
     {
-        tilesColor.SetTileColor(this.transform);
         movement = dir;
+        animator.SetTrigger("move");
         SafeCurrentPosition();
         Move();
     }

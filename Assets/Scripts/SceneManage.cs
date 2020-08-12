@@ -57,4 +57,9 @@ public class SceneManage : MonoBehaviour
     {
         LoadLevel("Author");
     }
+
+    public void ReloadScene()
+    {
+        LoadLevel(SceneManager.GetActiveScene().buildIndex);
+    }
 }
