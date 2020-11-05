@@ -67,11 +67,11 @@ public class WinCondition : MonoBehaviour
 
     private void CountStars()
     {
-        if (playerMovement.numMoves <= movePerStar[0])
+        if (playerMovement.GetNumMoves() <= movePerStar[0])
         {
             player.UpdateStarPerLever(3);
         }
-        else if (playerMovement.numMoves > movePerStar[0] && playerMovement.numMoves <= movePerStar[1])
+        else if (playerMovement.GetNumMoves() > movePerStar[0] && playerMovement.GetNumMoves() <= movePerStar[1])
         {
             player.UpdateStarPerLever(2);
         }

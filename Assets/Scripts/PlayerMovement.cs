@@ -4,26 +4,22 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float jumpLength = 1.5f;
+    [SerializeField] float jumpLength = 1.5f;
+    [SerializeField] float SWIPE_THRESHOLD = 20f;
 
     Rigidbody2D rb;
-    Vector2 movement;
     Vector2 lastPos;
-    public int numMoves;
-    private Vector2 fingerDown;
-    private Vector2 fingerUp;
-    private Animator animator;
+    int numMoves;
+    Vector2 fingerDown;
+    Vector2 fingerUp;
 
-    public float SWIPE_THRESHOLD = 20f;
-
-    private void Start()
+    void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         numMoves = 0;
-        animator = GetComponent<Animator>();
     }
 
-    private void Update()
+    void Update()
     {
         if (!FindObjectOfType<WinCondition>().GetAlreadyWon())
         {
@@ -32,51 +28,53 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void CheckForInputs()
+    void CheckForInputs()
     {
         if (Input.GetKeyDown("w"))
         {
             HandleMove(new Vector2(0, jumpLength));
+            transform.rotation = Quaternion.Euler(0, 0, 90);
         }
         if (Input.GetKeyDown("s"))
         {
             HandleMove(new Vector2(0, -jumpLength));
+            transform.rotation = Quaternion.Euler(0, 0, -90);
         }
         if (Input.GetKeyDown("a"))
         {
             HandleMove(new Vector2(-jumpLength, 0));
+            transform.rotation = Quaternion.Euler(0, 0, 180);
         }
         if (Input.GetKeyDown("d"))
         {
             HandleMove(new Vector2(jumpLength, 0));
+            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 
-    private void HandleMove(Vector2 dir)
-    {
-        movement = dir;
-        animator.SetTrigger("move");
-        SafeCurrentPosition();
-        Move();
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
         transform.position = lastPos;
         numMoves -= 1;
     }
-    private void SafeCurrentPosition()
+
+    void HandleMove(Vector2 dir)
+    {
+        SafeCurrentPosition();
+        Move(dir);
+    }
+    void SafeCurrentPosition()
     {
         lastPos = transform.position;
     }
-    private void Move()
+    void Move(Vector2 movement)
     {
-        Vector2 newPos = new Vector2(transform.position.x + movement.x, transform.position.y + movement.y);
+        Vector3 newPos = new Vector3(transform.position.x + movement.x, transform.position.y + movement.y, transform.position.z);
         rb.MovePosition(newPos);
         numMoves += 1;
     }
 
-    private void MobileInputs()
+    void MobileInputs()
     {
         foreach (Touch touch in Input.touches)
         {
@@ -90,15 +88,15 @@ public class PlayerMovement : MonoBehaviour
             if (touch.phase == TouchPhase.Ended)
             {
                 fingerDown = touch.position;
-                checkSwipe();
+                CheckSwipe();
             }
         }
     }
 
-    void checkSwipe()
+    void CheckSwipe()
     {
         //Check if Vertical swipe
-        if (verticalMove() > SWIPE_THRESHOLD && verticalMove() > horizontalValMove())
+        if (VerticalMove() > SWIPE_THRESHOLD && VerticalMove() > HorizontalValMove())
         {
             //Debug.Log("Vertical");
             if (fingerDown.y - fingerUp.y > 0)//up swipe
@@ -113,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Check if Horizontal swipe
-        else if (horizontalValMove() > SWIPE_THRESHOLD && horizontalValMove() > verticalMove())
+        else if (HorizontalValMove() > SWIPE_THRESHOLD && HorizontalValMove() > VerticalMove())
         {
             //Debug.Log("Horizontal");
             if (fingerDown.x - fingerUp.x > 0)//Right swipe
@@ -128,12 +126,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    float verticalMove()
+    float VerticalMove()
     {
         return Mathf.Abs(fingerDown.y - fingerUp.y);
     }
 
-    float horizontalValMove()
+    float HorizontalValMove()
     {
         return Mathf.Abs(fingerDown.x - fingerUp.x);
     }
@@ -142,20 +140,29 @@ public class PlayerMovement : MonoBehaviour
     void OnSwipeUp()
     {
         HandleMove(new Vector2(0, jumpLength));
+        transform.rotation = Quaternion.Euler(0, 0, 90);
     }
 
     void OnSwipeDown()
     {
         HandleMove(new Vector2(0, -jumpLength));
+        transform.rotation = Quaternion.Euler(0, 0, -90);
     }
 
     void OnSwipeLeft()
     {
         HandleMove(new Vector2(-jumpLength, 0));
+        transform.rotation = Quaternion.Euler(0, 0, 180);
     }
 
     void OnSwipeRight()
     {
         HandleMove(new Vector2(jumpLength, 0));
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+    }
+
+    public int GetNumMoves()
+    {
+        return numMoves;
     }
 }
