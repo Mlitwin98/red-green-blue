@@ -6,12 +6,14 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] float jumpLength = 1.5f;
     [SerializeField] float SWIPE_THRESHOLD = 20f;
-
+    [SerializeField] float speed = 5f;
     Rigidbody2D rb;
     Vector2 lastPos;
     int numMoves;
     Vector2 fingerDown;
     Vector2 fingerUp;
+    bool hitCollision;
+    bool waitingForInput = true;
 
     void Start()
     {
@@ -21,8 +23,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!FindObjectOfType<WinCondition>().GetAlreadyWon())
+        if (!FindObjectOfType<WinCondition>().GetAlreadyWon() && waitingForInput)
         {
+            hitCollision = false;
             CheckForInputs();
             MobileInputs();
         }
@@ -54,24 +57,31 @@ public class PlayerMovement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        hitCollision = true;
         transform.position = lastPos;
-        numMoves -= 1;
+        numMoves -= 1;  
     }
 
     void HandleMove(Vector2 dir)
     {
         SafeCurrentPosition();
-        Move(dir);
+        StartCoroutine(Move(dir));
     }
     void SafeCurrentPosition()
     {
         lastPos = transform.position;
     }
-    void Move(Vector2 movement)
+    IEnumerator Move(Vector2 movement)
     {
         Vector3 newPos = new Vector3(transform.position.x + movement.x, transform.position.y + movement.y, transform.position.z);
-        rb.MovePosition(newPos);
+        while (transform.position != newPos && !hitCollision)
+        {
+            waitingForInput = false;
+            transform.position = Vector3.MoveTowards(transform.position, newPos, speed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
         numMoves += 1;
+        waitingForInput = true;
     }
 
     void MobileInputs()
