@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class WinCondition : MonoBehaviour
 {
-    [SerializeField] GameObject winCanvas = default;
+    [SerializeField] GameObject winCanvasFadeToAnimate = default;
     [SerializeField] AudioClip winSFX = default;
     public int level;
 
@@ -18,10 +18,10 @@ public class WinCondition : MonoBehaviour
     PlayerMovement playerMovement;
     bool shouldWin = false;
     bool oneTimer = true;
+    int stars;
 
     void Start()
     {
-        winCanvas.SetActive(false);
         goalsArray = FindObjectsOfType<Goal>();
         playerMovement = FindObjectOfType<PlayerMovement>();
         player = FindObjectOfType<Player>();
@@ -44,46 +44,55 @@ public class WinCondition : MonoBehaviour
         if (shouldWin && oneTimer)
         {
             HandleWin();
-            //StartCoroutine(HandleWin());
             oneTimer = false;
         }
     }
-    private void HandleWin()
+    void HandleWin()
     {
-        winCanvas.SetActive(true);
-        AudioSource.PlayClipAtPoint(winSFX, Camera.main.transform.position);
         CountStars();
-        LevelBeaten();
-        //yield return StartCoroutine(WaitForKeyPress());
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-    }
-    IEnumerator WaitForKeyPress()
-    {
-        do
+        AnimateWinCanvas();
+        AudioSource.PlayClipAtPoint(winSFX, Camera.main.transform.position);
+        if (player != null )
         {
-            yield return null;
-        } while (!Input.anyKey);
+            SaveStars();
+            LevelBeaten();
+        }
     }
 
-    private void CountStars()
+    void AnimateWinCanvas()
+    {
+        winCanvasFadeToAnimate.GetComponent<Animator>().SetBool("won", true);
+        Transform starsParent = winCanvasFadeToAnimate.transform.Find("Stars").transform;
+        for (int i = 0; i < stars; i++)
+        {
+            starsParent.GetChild(i).GetComponent<Image>().enabled = true;
+        }
+    }
+
+    void CountStars()
     {
         if (playerMovement.GetNumMoves() <= movePerStar[0])
         {
-            player.UpdateStarPerLever(3);
+            stars = 3;
         }
         else if (playerMovement.GetNumMoves() > movePerStar[0] && playerMovement.GetNumMoves() <= movePerStar[1])
         {
-            player.UpdateStarPerLever(2);
+            stars = 2;
         }
         else
         {
-            player.UpdateStarPerLever(1);
+            stars = 1;
         }
     }
 
-    private void LevelBeaten()
+    void SaveStars()
     {
-        FindObjectOfType<Player>().LevelFinished(level);
+        player.UpdateStarPerLever(stars);
+    }
+
+    void LevelBeaten()
+    {
+        player.LevelFinished(level);
     }
 
     public bool GetAlreadyWon()
