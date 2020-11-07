@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     public int[] starPerLevel;
     public int levelNow;
 
-    private void Awake()
+    void Awake()
     {
         Singleton();
         starPerLevel = new int[unlockedLevel.Length];
@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
         unlockedLevel[level] = true;
     }
 
-    private void Singleton()
+    void Singleton()
     {
         if (FindObjectsOfType<Player>().Length > 1)
         {

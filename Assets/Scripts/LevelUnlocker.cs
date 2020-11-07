@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class LevelUnlocker : MonoBehaviour
 {
     public GameObject[] levels;
+    [SerializeField] Sprite disabledSprite = default;
 
     Player player;
 
@@ -26,6 +27,7 @@ public class LevelUnlocker : MonoBehaviour
             else
             {
                 levels[i].GetComponent<Button>().interactable = false;
+                levels[i].GetComponent<Image>().sprite = disabledSprite;
             }
         }
     }
