@@ -65,8 +65,30 @@ public class SceneManage : MonoBehaviour
 
     public void ReloadScene()
     {
-        int level = SceneManager.GetActiveScene().buildIndex;
-        if (player != null) player.SetCurrentLevel(level);
-        SceneManager.LoadScene(level);
+        LoadLevel(SceneManager.GetActiveScene().buildIndex);
+    }
+
+
+    //NO ANIMATION
+    public void LoadLevelsWithoutAnim()
+    {
+        SceneManager.LoadScene("Levels");
+    }
+
+    public void LoadReloadWithoutAnim()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void LoadMenuWithoutAnim()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void LoadNextLevelWithoutAnim()
+    {
+        int nextLevel = player.GetCurrentLevel() + 1;
+        player.SetCurrentLevel(nextLevel);
+        SceneManager.LoadScene(nextLevel + 1);
     }
 }

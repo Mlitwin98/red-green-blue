@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
     public bool[] unlockedLevel;
     public int[] starPerLevel;
-    int currentLevel;
+    public int currentLevel;
 
     void Awake()
     {
