@@ -5,13 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class SceneManage : MonoBehaviour
 {
-    public Animator fadeAnim;
+    [SerializeField] Animator fadeCanvas = default;
+    Player player;
+
+    void Start() 
+    {
+        player = FindObjectOfType<Player>();
+    }
 
     public void LoadLevel(int level)
     {
-        FindObjectOfType<Player>().levelNow = level;
+        if (player != null) player.SetCurrentLevel(level);
         StartCoroutine(HandleAnim(level));
-
     }
 
     public void LoadLevel(string level)
@@ -19,16 +24,16 @@ public class SceneManage : MonoBehaviour
         StartCoroutine(HandleAnim(level));
     }
 
-    private IEnumerator HandleAnim(int level)
+    IEnumerator HandleAnim(int level)
     {
-        fadeAnim.SetBool("fadeOut", true);
-        yield return new WaitForSeconds(1.2f);
+        fadeCanvas.SetBool("fadeOut", true);
+        yield return new WaitForSeconds(fadeCanvas.GetCurrentAnimatorStateInfo(0).length+0.1f);
         SceneManager.LoadScene(level);
     }
-    private IEnumerator HandleAnim(string level)
+    IEnumerator HandleAnim(string level)
     {
-        fadeAnim.SetBool("fadeOut", true);
-        yield return new WaitForSeconds(1.2f);
+        fadeCanvas.SetBool("fadeOut", true);
+        yield return new WaitForSeconds(fadeCanvas.GetCurrentAnimatorStateInfo(0).length+0.1f);
         SceneManager.LoadScene(level);
     }
 
@@ -40,12 +45,12 @@ public class SceneManage : MonoBehaviour
 
     public void LoadNextLevel()
     {
-        LoadLevel(FindObjectOfType<Player>().levelNow + 1);
+        LoadLevel(player.GetCurrentLevel() + 1);
     }
 
     public void LoadLevelFromMenu()
     {
-        LoadLevel(FindObjectOfType<Player>().levelNow + 1);
+        LoadLevel(player.GetCurrentLevel() + 1);
     }
 
     public void LoadLevelsScene()
@@ -60,6 +65,8 @@ public class SceneManage : MonoBehaviour
 
     public void ReloadScene()
     {
-        LoadLevel(SceneManager.GetActiveScene().buildIndex);
+        int level = SceneManager.GetActiveScene().buildIndex;
+        if (player != null) player.SetCurrentLevel(level);
+        SceneManager.LoadScene(level);
     }
 }

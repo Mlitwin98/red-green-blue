@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
     public bool[] unlockedLevel;
     public int[] starPerLevel;
-    public int levelNow;
+    int currentLevel;
 
     void Awake()
     {
@@ -34,6 +34,21 @@ public class Player : MonoBehaviour
 
     public void UpdateStarPerLever(int stars)
     {
-        starPerLevel[levelNow-1] = stars;
+        starPerLevel[currentLevel-1] = stars;
+    }
+
+    public int GetCurrentLevel()
+    {
+        return currentLevel;
+    }
+
+    public void SetCurrentLevel(int set)
+    {
+        currentLevel = set;
+    }
+
+    public void IncrementCurrentLevel()
+    {
+        currentLevel++;
     }
 }

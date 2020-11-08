@@ -5,7 +5,7 @@ using UnityEngine;
 public class MyButton : MonoBehaviour
 {
     [SerializeField] GameObject[] blockade = default;
-    [SerializeField] Sprite[] usedLeverSprite = default;
+    [SerializeField] Sprite usedLeverSprite = default;
 
     bool used = false;
     
@@ -17,18 +17,7 @@ public class MyButton : MonoBehaviour
             {
                 Destroy(block);
             }
-            if (gameObject.name == "Red Button")
-            {
-                GetComponent<SpriteRenderer>().sprite = usedLeverSprite[0];
-            }
-            else if (gameObject.name == "Green Button")
-            {
-                GetComponent<SpriteRenderer>().sprite = usedLeverSprite[1];
-            }
-            else
-            {
-                GetComponent<SpriteRenderer>().sprite = usedLeverSprite[2];
-            }
+            GetComponent<SpriteRenderer>().sprite = usedLeverSprite;
             used = true;
         }        
     }
