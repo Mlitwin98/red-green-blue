@@ -146,8 +146,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpLength: 1.5
-  numMoves: 0
   SWIPE_THRESHOLD: 20
+  speed: 5
 --- !u!114 &852355855882465861
 MonoBehaviour:
   m_ObjectHideFlags: 0
