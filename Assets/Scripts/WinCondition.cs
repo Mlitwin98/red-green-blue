@@ -10,7 +10,7 @@ public class WinCondition : MonoBehaviour
     public int level;
 
     //SIZE 2
-    public int[] movePerStar;
+    public int[] movePerStar = new int[2];
 
 
     Goal[] goalsArray;

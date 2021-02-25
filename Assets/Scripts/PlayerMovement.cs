@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     bool hitCollision;
     bool waitingForInput = true;
 
+    static bool stoppedFaster = false;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -23,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!FindObjectOfType<WinCondition>().GetAlreadyWon() && waitingForInput)
+        if (!FindObjectOfType<WinCondition>().GetAlreadyWon() && waitingForInput && !stoppedFaster)
         {
             hitCollision = false;
             CheckForInputs();
@@ -59,7 +61,8 @@ public class PlayerMovement : MonoBehaviour
     {
         hitCollision = true;
         transform.position = lastPos;
-        numMoves -= 1;  
+        numMoves -= 1;
+        stoppedFaster = true;
     }
 
     void HandleMove(Vector2 dir)
@@ -79,6 +82,10 @@ public class PlayerMovement : MonoBehaviour
             waitingForInput = false;
             transform.position = Vector3.MoveTowards(transform.position, newPos, speed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
+        }
+        if(!hitCollision)
+        {
+            stoppedFaster = false;
         }
         numMoves += 1;
         waitingForInput = true;
@@ -174,5 +181,10 @@ public class PlayerMovement : MonoBehaviour
     public int GetNumMoves()
     {
         return numMoves;
+    }
+
+    public void SetHitCollision(bool set)
+    {
+        hitCollision = set;
     }
 }
