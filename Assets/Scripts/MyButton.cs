@@ -15,7 +15,8 @@ public class MyButton : MonoBehaviour
         {
             foreach (var block in blockade)
             {
-                Destroy(block);
+                block.GetComponent<Animator>().SetTrigger("fade");
+                Destroy(block, 1f);
             }
             GetComponent<SpriteRenderer>().sprite = usedLeverSprite;
             used = true;

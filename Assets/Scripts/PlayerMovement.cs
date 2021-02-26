@@ -9,13 +9,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float speed = 5f;
     Rigidbody2D rb;
     Vector2 lastPos;
+    Vector2 lastMove;
     int numMoves;
     Vector2 fingerDown;
     Vector2 fingerUp;
+    Coroutine movementCoroutine;
     bool hitCollision;
     bool waitingForInput = true;
 
     static bool stoppedFaster = false;
+    static int stoppedMoving = 0;
 
     void Start()
     {
@@ -31,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
             CheckForInputs();
             MobileInputs();
         }
+        Debug.Log(stoppedFaster);
     }
 
     void CheckForInputs()
@@ -63,12 +67,14 @@ public class PlayerMovement : MonoBehaviour
         transform.position = lastPos;
         numMoves -= 1;
         stoppedFaster = true;
+        stoppedMoving += 1;
     }
 
-    void HandleMove(Vector2 dir)
+    public void HandleMove(Vector2 dir)
     {
+        lastMove = dir;
         SafeCurrentPosition();
-        StartCoroutine(Move(dir));
+        movementCoroutine = StartCoroutine(Move(dir));
     }
     void SafeCurrentPosition()
     {
@@ -80,15 +86,28 @@ public class PlayerMovement : MonoBehaviour
         while (transform.position != newPos && !hitCollision)
         {
             waitingForInput = false;
+            
             transform.position = Vector3.MoveTowards(transform.position, newPos, speed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
         }
+
+        //movement bug fix
         if(!hitCollision)
         {
             stoppedFaster = false;
         }
+        if(stoppedMoving >= 3)
+        {
+            stoppedFaster = false;
+            stoppedMoving = 0;
+        }
+
         numMoves += 1;
         waitingForInput = true;
+
+        //TO FIX:
+        //Can't move after collision after sliding on ice
+        //Can move asynch in some situations
     }
 
     void MobileInputs()
@@ -115,7 +134,6 @@ public class PlayerMovement : MonoBehaviour
         //Check if Vertical swipe
         if (VerticalMove() > SWIPE_THRESHOLD && VerticalMove() > HorizontalValMove())
         {
-            //Debug.Log("Vertical");
             if (fingerDown.y - fingerUp.y > 0)//up swipe
             {
                 OnSwipeUp();
@@ -130,7 +148,6 @@ public class PlayerMovement : MonoBehaviour
         //Check if Horizontal swipe
         else if (HorizontalValMove() > SWIPE_THRESHOLD && HorizontalValMove() > VerticalMove())
         {
-            //Debug.Log("Horizontal");
             if (fingerDown.x - fingerUp.x > 0)//Right swipe
             {
                 OnSwipeRight();
@@ -186,5 +203,25 @@ public class PlayerMovement : MonoBehaviour
     public void SetHitCollision(bool set)
     {
         hitCollision = set;
+    }
+
+    public Vector2 GetLastMove()
+    {
+        return lastMove;
+    }
+
+    public void DecreaseMoves()
+    {
+        numMoves -= 1;
+    }
+
+    public void StopMovement()
+    {
+        StopCoroutine(movementCoroutine);
+    }
+
+    public void SetStoppedFaster(bool set)
+    {
+        stoppedFaster = set;
     }
 }
