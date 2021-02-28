@@ -17,8 +17,9 @@ public class PlayerMovement : MonoBehaviour
     bool hitCollision;
     bool waitingForInput = true;
 
-    static bool stoppedFaster = false;
-    static int stoppedMoving = 0;
+    static int stoppedMovingCounter = 0;
+    static bool someoneIsSliding = false;
+    static bool someoneStoppedFaster = false;
 
     void Start()
     {
@@ -28,13 +29,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!FindObjectOfType<WinCondition>().GetAlreadyWon() && waitingForInput && !stoppedFaster)
+        if (!FindObjectOfType<WinCondition>().GetAlreadyWon() && waitingForInput && stoppedMovingCounter < 3 && !someoneIsSliding && !someoneStoppedFaster)
         {
             hitCollision = false;
             CheckForInputs();
             MobileInputs();
+            Debug.Log(stoppedMovingCounter);
+            Debug.Log(someoneStoppedFaster);
         }
-        Debug.Log(stoppedFaster);
     }
 
     void CheckForInputs()
@@ -65,20 +67,34 @@ public class PlayerMovement : MonoBehaviour
     {
         hitCollision = true;
         transform.position = lastPos;
-        numMoves -= 1;
-        stoppedFaster = true;
-        stoppedMoving += 1;
+        someoneStoppedFaster = true;
+        if(stoppedMovingCounter >= 2)
+        {
+            someoneStoppedFaster = false;
+            stoppedMovingCounter = 0;
+        }
     }
 
-    public void HandleMove(Vector2 dir)
+    void HandleMove(Vector2 dir)
     {
         lastMove = dir;
         SafeCurrentPosition();
         movementCoroutine = StartCoroutine(Move(dir));
     }
+
+    public void HandleSlide(Vector2 icePos, Vector2 dir)
+    {
+        lastMove = dir;
+        SafeCurrentPosition(icePos);
+        movementCoroutine = StartCoroutine(Slide(icePos, dir));
+    }
     void SafeCurrentPosition()
     {
         lastPos = transform.position;
+    }
+    void SafeCurrentPosition(Vector2 fakeLastPos)
+    {
+        lastPos = fakeLastPos;
     }
     IEnumerator Move(Vector2 movement)
     {
@@ -91,23 +107,30 @@ public class PlayerMovement : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        //movement bug fix
-        if(!hitCollision)
+        stoppedMovingCounter += 1;
+        if(stoppedMovingCounter == 3)
         {
-            stoppedFaster = false;
-        }
-        if(stoppedMoving >= 3)
-        {
-            stoppedFaster = false;
-            stoppedMoving = 0;
+            someoneStoppedFaster = false;
+            stoppedMovingCounter = 0;
         }
 
         numMoves += 1;
         waitingForInput = true;
+    }
 
-        //TO FIX:
-        //Can't move after collision after sliding on ice
-        //Can move asynch in some situations
+    IEnumerator Slide(Vector2 icePos, Vector2 movement)
+    {
+        Vector3 newPos = new Vector3(icePos.x + movement.x, icePos.y + movement.y, transform.position.z);
+        while (transform.position != newPos && !hitCollision)
+        {
+            someoneIsSliding = true;
+            waitingForInput = false;
+            transform.position = Vector3.MoveTowards(transform.position, newPos, speed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+
+        waitingForInput = true;
+        someoneIsSliding = false;
     }
 
     void MobileInputs()
@@ -210,11 +233,6 @@ public class PlayerMovement : MonoBehaviour
         return lastMove;
     }
 
-    public void DecreaseMoves()
-    {
-        numMoves -= 1;
-    }
-
     public void StopMovement()
     {
         StopCoroutine(movementCoroutine);
@@ -222,6 +240,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetStoppedFaster(bool set)
     {
-        stoppedFaster = set;
+        someoneStoppedFaster = set;
     }
 }

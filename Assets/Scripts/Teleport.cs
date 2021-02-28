@@ -11,8 +11,8 @@ public class Teleport : MonoBehaviour
         if(canTP){
             teleportExit.canTP = false;
             other.transform.position = teleportExit.transform.position;
-            other.GetComponent<PlayerMovement>().SetStoppedFaster(true);
             other.GetComponent<PlayerMovement>().SetHitCollision(true);
+            other.GetComponent<PlayerMovement>().SetStoppedFaster(true);
         }
     }
 
