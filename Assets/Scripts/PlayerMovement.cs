@@ -34,8 +34,6 @@ public class PlayerMovement : MonoBehaviour
             hitCollision = false;
             CheckForInputs();
             MobileInputs();
-            Debug.Log(stoppedMovingCounter);
-            Debug.Log(someoneStoppedFaster);
         }
     }
 
