@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     Vector2 fingerDown;
     Vector2 fingerUp;
     Coroutine movementCoroutine;
+    CamerControl cam;
     bool hitCollision;
     bool waitingForInput = true;
 
@@ -24,12 +25,13 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        cam = FindObjectOfType<CamerControl>();
         numMoves = 0;
     }
 
     void Update()
     {
-        if (!FindObjectOfType<WinCondition>().GetAlreadyWon() && waitingForInput && stoppedMovingCounter < 3 && !someoneIsSliding && !someoneStoppedFaster)
+        if (!FindObjectOfType<WinCondition>().GetAlreadyWon() && waitingForInput && stoppedMovingCounter < 3 && !someoneIsSliding && !someoneStoppedFaster && !cam.GetCameraIsMoving())
         {
             hitCollision = false;
             CheckForInputs();
