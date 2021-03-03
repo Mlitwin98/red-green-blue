@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     Vector2 lastPos;
     Vector2 lastMove;
     int numMoves;
+    int numOfPlayers;
     Vector2 fingerDown;
     Vector2 fingerUp;
     Coroutine movementCoroutine;
@@ -24,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        numOfPlayers = FindObjectsOfType<PlayerMovement>().Length;
         rb = GetComponent<Rigidbody2D>();
         cam = FindObjectOfType<CamerControl>();
         numMoves = 0;
@@ -31,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!FindObjectOfType<WinCondition>().GetAlreadyWon() && waitingForInput && stoppedMovingCounter < 3 && !someoneIsSliding && !someoneStoppedFaster && !cam.GetCameraIsMoving())
+        if (!FindObjectOfType<WinCondition>().GetAlreadyWon() && waitingForInput && stoppedMovingCounter < numOfPlayers && !someoneIsSliding && !someoneStoppedFaster && !cam.GetCameraIsMoving())
         {
             hitCollision = false;
             CheckForInputs();
@@ -68,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
         hitCollision = true;
         transform.position = lastPos;
         someoneStoppedFaster = true;
-        if(stoppedMovingCounter >= 2)
+        if(stoppedMovingCounter >= numOfPlayers-1)
         {
             someoneStoppedFaster = false;
             stoppedMovingCounter = 0;
@@ -108,7 +110,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         stoppedMovingCounter += 1;
-        if(stoppedMovingCounter == 3)
+        if(stoppedMovingCounter == numOfPlayers)
         {
             someoneStoppedFaster = false;
             stoppedMovingCounter = 0;
