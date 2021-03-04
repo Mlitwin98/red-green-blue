@@ -7,12 +7,15 @@ public class CamerControl : MonoBehaviour
     [SerializeField] float moveSpeed = 20;
     [SerializeField] Transform target = default;
 
+    [SerializeField] GameObject[] UIToHide = default;
+
     Vector3 startingPos;
 
     bool cameraIsMoving;
 
     void Start() 
     {
+        foreach(var ui in UIToHide) ui.SetActive(false);
         cameraIsMoving = true;
         startingPos = transform.position;
         if (target != null)
@@ -29,11 +32,13 @@ public class CamerControl : MonoBehaviour
         {
             cameraIsMoving = true;
             transform.position = Vector3.MoveTowards(transform.position, new Vector3(targetBtn.position.x, targetBtn.position.y, transform.position.z), moveSpeed * Time.deltaTime);
+            foreach(var ui in UIToHide) ui.SetActive(false);
         }
         if( targetBtn != null && targetBtn.position.x == transform.position.x)
         {
             targetBtn = null;
             cameraIsMoving = false;
+            foreach(var ui in UIToHide) ui.SetActive(true);
         }
         
     }
@@ -62,6 +67,7 @@ public class CamerControl : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         cameraIsMoving = false;
+        foreach(var ui in UIToHide) ui.SetActive(true);
     }
 
     public bool GetCameraIsMoving()
